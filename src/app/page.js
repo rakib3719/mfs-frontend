@@ -4,7 +4,7 @@ export default function Home() {
   return (
    <div>
 
-    This is ki home ni baba re baba
+   
    </div>
   );
 }

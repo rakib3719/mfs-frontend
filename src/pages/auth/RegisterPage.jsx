@@ -2,79 +2,61 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { TbUserPlus } from "react-icons/tb";
-import { FaRegUser, FaEnvelope, FaLock, FaUpload, FaPhone, FaCalendarAlt, FaMapMarkerAlt, FaIdCard } from "react-icons/fa";
+import { FaRegUser, FaEnvelope, FaLock, FaPhone, FaIdCard } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
-import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import { imageUpload } from '../utilities/photoUpload';
+import axiosInstance from '@/utils/axios';
 
 const RegisterPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [accountType, setAccountType] = useState('user'); // Default to 'user'
 
   const registerHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
     
-    // Collect all form data
-    const formData = {
+    const userData = {
       name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-      phone: e.target.phone.value,
-      dob: e.target.dob.value,
-      address: e.target.address.value,
+      pin: e.target.pin.value,
+      mobileNumber: e.target.phone.value,
+      email: e.target.email.value.toLowerCase(),
       nid: e.target.nid.value,
-      photo: e.target.photo.files[0] || null
+      accountType: accountType,
     };
 
-    // Log form data to console
-    console.log('Form Data:', formData);
+   try {
+    const resp = await axiosInstance.post('/user/register', userData);
+    console.log(resp, 'done');
+    
+   } catch (error) {
+    console.log(error);
+   }
 
-    try {
-      // Upload image if exists
-      let photoURL = null;
-      if (formData.photo) {
-        const imageURL = await imageUpload(formData.photo);
-        photoURL = imageURL?.data?.data?.delete_url || null;
-      }
+    console.log('Prepared User Data:', userData);
 
-      const user = {
-        ...formData,
-        photoURL
-      };
+    // Here you would typically send the data to your API
+    // try {
+    //   const response = await fetch('/api/register', {
+    //     method: "POST",
+    //     body: JSON.stringify(userData),
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     }
+    //   });
+    //   // Handle response...
+    // } catch (error) {
+    //   // Handle error...
+    // }
 
-      const response = await fetch('registar/api', {
-        method: "POST",
-        body: JSON.stringify(user),
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      console.log("API Response:", response);
-
-      if (response.status === 200) {
-        toast.success("Registration successful");
-        setLoading(false);
-        setTimeout(() => {
-          router.push('/');
-        }, 3000);
-      } else {
-        toast.error(response.statusText);
-        setLoading(false);
-      }
-    } catch (error) {
-      toast.error(error.message);
-      setLoading(false);
-    }
+    setLoading(false);
   };
 
   return (
-    <div className="flex pb-20 items-center justify-center bg-gray-50">
+    <div className="flex p-20  items-center justify-center bg-gray-50">
       <ToastContainer />
-      <div className="w-full mt-24 max-w-[700px] pb-8 space-y-6 bg-white shadow-lg">
+      <div className="w-full mt-24  pb-8 space-y-6 bg-white shadow-lg">
         <div className='flex w-full items-center font-semibold text-lg gap-4 text-white px-8 py-2 bg-[#2b97a3]'>
           <h1 className='text-3xl'><TbUserPlus /></h1>
           <h1 className=''>Create an Account</h1>
@@ -84,7 +66,7 @@ const RegisterPage = () => {
           <form onSubmit={registerHandler} className="mt-8 space-y-4 px-8 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Name Field */}
-              <div>
+              <div className="md:col-span-2">
                 <label htmlFor="name" className="sr-only">Full Name</label>
                 <div className="relative flex items-center">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -121,28 +103,31 @@ const RegisterPage = () => {
                 </div>
               </div>
 
-              {/* Password Field */}
+              {/* PIN Field */}
               <div>
-                <label htmlFor="password" className="sr-only">Password</label>
+                <label htmlFor="pin" className="sr-only">PIN</label>
                 <div className="relative flex items-center">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <FaLock className="text-[#ababab] text-lg" />
                   </span>
                   <input
-                    id="password"
-                    name="password"
+                    id="pin"
+                    name="pin"
                     type="password"
                     autoComplete="new-password"
                     required
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
-                    placeholder="Password"
+                    placeholder="Create PIN (5 digits)"
+                    pattern="\d{5}"
+                    title="PIN must be exactly 5 digits"
+                    maxLength="5"
                   />
                 </div>
               </div>
 
               {/* Phone Field */}
               <div>
-                <label htmlFor="phone" className="sr-only">Phone Number</label>
+                <label htmlFor="phone" className="sr-only">Mobile Number</label>
                 <div className="relative flex items-center">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <FaPhone className="text-[#ababab] text-lg" />
@@ -154,49 +139,31 @@ const RegisterPage = () => {
                     autoComplete="tel"
                     required
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
-                    placeholder="Phone Number"
+                    placeholder="Mobile Number"
                   />
                 </div>
               </div>
 
-              {/* Date of Birth Field */}
+              {/* Account Type Dropdown */}
               <div>
-                <label htmlFor="dob" className="sr-only">Date of Birth</label>
+                <label htmlFor="accountType" className="sr-only">Account Type</label>
                 <div className="relative flex items-center">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaCalendarAlt className="text-[#ababab] text-lg" />
-                  </span>
-                  <input
-                    id="dob"
-                    name="dob"
-                    type="date"
+                  <select
+                    id="accountType"
+                    name="accountType"
+                    value={accountType}
+                    onChange={(e) => setAccountType(e.target.value)}
                     required
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Address Field */}
-              <div className="md:col-span-2">
-                <label htmlFor="address" className="sr-only">Address</label>
-                <div className="relative flex items-center">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaMapMarkerAlt className="text-[#ababab] text-lg" />
-                  </span>
-                  <input
-                    id="address"
-                    name="address"
-                    type="text"
-                    autoComplete="street-address"
-                    required
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
-                    placeholder="Full Address"
-                  />
+                    className="block w-full pl-3 pr-3 py-2 border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
+                  >
+                    <option value="user">User</option>
+                    <option value="agent">Agent</option>
+                  </select>
                 </div>
               </div>
 
               {/* NID Field */}
-              <div className="md:col-span-2">
+              <div>
                 <label htmlFor="nid" className="sr-only">NID Number</label>
                 <div className="relative flex items-center">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -209,22 +176,6 @@ const RegisterPage = () => {
                     required
                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
                     placeholder="National ID Number"
-                  />
-                </div>
-              </div>
-
-              {/* Photo Upload Field */}
-              <div className="md:col-span-2">
-                <label htmlFor="photo" className="sr-only">Profile Photo</label>
-                <div className="relative flex items-center">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FaUpload className="text-[#ababab] text-lg" />
-                  </span>
-                  <input
-                    id="photo"
-                    name="photo"
-                    type="file"
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-[#2b97a4] focus:border-[#2b97a4] sm:text-sm"
                   />
                 </div>
               </div>
@@ -242,7 +193,7 @@ const RegisterPage = () => {
           </form>
 
           <div className="mt-6 px-8 w-full">
-            <h1 className='font-semibold'>ALREADY HAVE AN ACCOUNT?</h1>
+            <h1 className='font-semibold text-black'>ALREADY HAVE AN ACCOUNT?</h1>
             <p className="font-medium text-[#4f4f4f]">
               Sign in to your account to continue!
             </p>
