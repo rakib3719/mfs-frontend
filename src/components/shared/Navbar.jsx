@@ -2,6 +2,8 @@
 
 import { useAuth } from "@/providers/AuthProvider";
 import axiosInstance from "@/utils/axios";
+import { usePathname } from "next/navigation";
+
 import { useState, useEffect, useRef } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible, AiOutlineUser } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
@@ -9,8 +11,20 @@ import { FiLogOut } from "react-icons/fi";
 const Navbar = () => {
   const [showBalance, setShowBalance] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const profileRef = useRef(null);
+  const pathname = usePathname();
+
+  if(isLoading){
+    return <h1>Loadin...</h1>
+  }
+
+
+  if(pathname.includes('/login') || pathname.includes('register')){
+ return null;
+  }
+
+
 
   const balance = user?.balance || 0;
   const formattedBalance = balance.toLocaleString('en-BD', {

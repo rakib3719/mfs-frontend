@@ -54,7 +54,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex p-20  items-center justify-center bg-gray-50">
+    <div className="flex p-2 md:p-12 lg:p-20  items-center justify-center bg-gray-50">
       <ToastContainer />
       <div className="w-full mt-24  pb-8 space-y-6 bg-white shadow-lg">
         <div className='flex w-full items-center font-semibold text-lg gap-4 text-white px-8 py-2 bg-[#2b97a3]'>

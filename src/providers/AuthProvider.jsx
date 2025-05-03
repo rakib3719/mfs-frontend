@@ -1,6 +1,7 @@
 "use client";
 
 
+
 import axiosInstance from "@/utils/axios";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -12,7 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const resp = await axiosInstance.post('/user/getUserOne');
+      const resp = await axiosInstance.get('/user/getUserOne');
       console.log('User data:', resp.data); 
       if (resp) {
         setUser(resp.data.user);
@@ -56,16 +57,28 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={value || { _id: "6812361c62ae78fd5244f6db",
+      name: "John Doe",
+      mobileNumber: "01712345678",
+      email: "john@example.com",
+      nid: "1234567890",
+      accountType: "user",
+      balance: 490,
+      isActive: true,
+      isApproved: true,
+      createdAt: "2025-04-30T14:39:24.994Z",
+      updatedAt: "2025-05-02T10:53:51.069Z",
+      __v: 0}}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+     return { user: null, setUser: () => {}, isLoading: true };
   }
   return context;
 };

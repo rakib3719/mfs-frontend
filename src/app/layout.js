@@ -1,10 +1,11 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import TanStackProvider from "@/providers/TanStackProvider";
+
 import Navbar from "@/components/shared/Navbar";
-import { AuthProvider } from "@/providers/AuthProvider";
+
 import Menu from "@/components/shared/Menu";
+import Providers from "./providers";
 
 
 
@@ -30,18 +31,20 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
 
-<AuthProvider>
+
   
-<TanStackProvider>
+
+<Providers>
 <div className=" min-h-[100vh] bg-[#0C0A2B] rounded-xl shadow-md mx-auto">
   <Navbar/>
 <Menu />
 
 {children}
 </div>
+</Providers>
 
-</TanStackProvider>
-</AuthProvider>
+
+
 
 
 
