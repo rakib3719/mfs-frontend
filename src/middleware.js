@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server'
 
 export function middleware(request) {
 
-  const protectedRoutes = ['/', '/dashboard', '/profile']
+
   
-  if (protectedRoutes.includes(request.nextUrl.pathname)) {
+
     
     const token = request.cookies.get('token')?.value
 
@@ -16,11 +16,11 @@ export function middleware(request) {
     }
 
 
-  }
+  
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/', '/dashboard', '/profile'], 
+  matcher: [ '/dashboard', '/profile'], 
 }

@@ -1,15 +1,10 @@
-'use client'
-
-import WidthDrawPage from '@/pages/WidthDrawPage';
-
+import Transaction from '@/pages/Transaction';
 import React from 'react';
 
 const page = () => {
-
-    
     return (
         <div>
-<WidthDrawPage/>
+            <Transaction/>
         </div>
     );
 };

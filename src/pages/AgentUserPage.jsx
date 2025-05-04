@@ -1,15 +1,23 @@
 'use client'
-import useGetUser from '@/hooks/useGetUser';
+
 import axiosInstance from '@/utils/axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { FiMoreVertical, FiCheck, FiX, FiFilter } from 'react-icons/fi';
 import { toast, ToastContainer } from 'react-toastify';
 
 
+const queryClient = new QueryClient();
+const AgentUserComponent = () => {
+   
 
-const AgentUserPage = () => {
-    const { data: users, isLoading, error, refetch } = useGetUser();
+    const { data: users, isLoading, error, refetch } = useQuery({
+        queryKey: ['getAgentUserPage'],
+        queryFn: async () => {
+          const res = await axiosInstance.get('/user');
+          return res.data;
+        },
+      });
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [filter, setFilter] = useState('pending');
 
@@ -191,16 +199,14 @@ const AgentUserPage = () => {
     );
 };
 
+
+
+const AgentUserPage= () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AgentUserComponent />
+    </QueryClientProvider>
+  );
+};
+
 export default AgentUserPage;
-
-// import React from 'react';
-
-// const AgentUserPage = () => {
-//     return (
-//         <div>
-            
-//         </div>
-//     );
-// };
-
-// export default AgentUserPage;

@@ -1,24 +1,38 @@
-'use client'
-import axiosInstance from '@/utils/axios';
-import { useQuery } from '@tanstack/react-query';
 
-const useGetUser= (query) => {
-    let url= '/user'
+// import axiosInstance from '@/utils/axios';
+// import { useQuery } from '@tanstack/react-query';
 
-    if(query){
-        url = '/user/?accountType=agent'
+// const useGetUser= (query) => {
+//     let url= '/user'
 
-    }
+//     if(query){
+//         url = '/user/?accountType=agent'
+
+//     }
 
 
-  return useQuery({
+//   return useQuery({
 
-    queryKey: ['getUser', query],
-    queryFn: async () => {
-      const response = await axiosInstance.get(url);
-      return response.data;
-    },
-  });
+//     queryKey: ['getUser', query],
+//     queryFn: async () => {
+//       const response = await axiosInstance.get(url);
+//       return response.data;
+//     },
+//   });
+// };
+
+// export default useGetUser;
+
+import React from 'react';
+
+const useGetUser = () => {
+  return (
+    <div>
+      
+    </div>
+  );
 };
 
 export default useGetUser;
+
+

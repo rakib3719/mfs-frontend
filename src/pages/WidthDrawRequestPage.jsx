@@ -1,26 +1,39 @@
 'use client'
-import useGetUser from '@/hooks/useGetUser';
-import useGetWidthdraw from '@/hooks/useGetWidhDraw';
 import { useAuth } from '@/providers/AuthProvider';
 import axiosInstance from '@/utils/axios';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
-const WidthDrawRequestPage = () => {
-  const { data, isLoading, error, refetch } = useGetWidthdraw();
-  const { data: user, isLoading: loader } = useGetUser();
+const WidthDrawRequestComponent = () => {
   const [updatingId, setUpdatingId] = useState(null);
-  const {refreshUser} = useAuth();
+  const { refreshUser } = useAuth();
 
-  
-  const widhDrawDetails = data?.data || [];
-  const userData = user?.data || [];
+  // Fetch withdrawal requests directly using useQuery
+  const { data: withdrawData, isLoading, error, refetch } = useQuery({
+    queryKey: ['withdrawRequests'],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/widthdraw');
+      return res.data;
+    }
+  });
 
-  // Match withdrawal requests with user data
+  // Fetch users directly using useQuery
+  const { data: userData, isLoading: userLoading } = useQuery({
+    queryKey: ['allUsers'],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/user');
+      return res.data;
+    }
+  });
+
+  const widhDrawDetails = withdrawData?.data || [];
+  const users = userData?.data || [];
+
+  // Match withdrawal requests with user data (same as original)
   const getRequestWithUser = () => {
     return widhDrawDetails.map(request => {
-      const user = userData.find(u => u.mobileNumber === request.agentNumber);
+      const user = users.find(u => u.mobileNumber === request.agentNumber);
       return {
         ...request,
         user: user || null
@@ -28,40 +41,33 @@ const WidthDrawRequestPage = () => {
     });
   };
 
+  // Handle status update (same as original)
   const handleStatusUpdate = async (id, newStatus) => {
     if (updatingId) return;
     
     setUpdatingId(id);
     try {
-      // Find the request being updated
       const request = widhDrawDetails.find(req => req._id === id);
       
       if (request) {
-        // Log the required data to console
-       const data =  {
+        const data = {
           _id: request._id,
           status: newStatus,
           amount: request.amount,
           agentNumber: request.agentNumber
         }
 
-     try {
-        const resp = await axiosInstance.put('/widthdraw/',data);
-        console.log(resp, 'widthdraw updated');
-        if(resp?.data?.success){
-            toast.success('Widhdraw Request Success')
+        try {
+          const resp = await axiosInstance.put('/widthdraw/', data);
+          console.log(resp, 'widthdraw updated');
+          if(resp?.data?.success) {
+            toast.success('Withdraw Request Success')
             refreshUser()
             refetch()
+          }
+        } catch (error) {
+          toast.error(error?.message)
         }
-        
-        
-     } catch (error) {
-        toast.error(error?.message)
-     }
-
-
-        
-     
       }
     } catch (error) {
       console.error('Failed to update status:', error);
@@ -70,7 +76,7 @@ const WidthDrawRequestPage = () => {
     }
   };
 
-  if (isLoading || loader) {
+  if (isLoading || userLoading) {
     return <div>Loading...</div>;
   }
 
@@ -79,11 +85,9 @@ const WidthDrawRequestPage = () => {
   }
 
   const requestsWithUsers = getRequestWithUser();
-  const client = new QueryClient();
 
   return (
-
-      <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Withdrawal Requests</h1>
       <ToastContainer/>
       <div className="overflow-x-auto">
@@ -154,20 +158,19 @@ const WidthDrawRequestPage = () => {
         </table>
       </div>
     </div>
+  );
+};
 
+// Create a query client instance
+const queryClient = new QueryClient();
+
+// Wrap the component with QueryClientProvider
+const WidthDrawRequestPage = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WidthDrawRequestComponent />
+    </QueryClientProvider>
   );
 };
 
 export default WidthDrawRequestPage;
-
-// import React from 'react';
-
-// const WidthDrawRequestPage = () => {
-//     return (
-//         <div>
-//             <h1>hi</h1>
-//         </div>
-//     );
-// };
-
-// export default WidthDrawRequestPage;

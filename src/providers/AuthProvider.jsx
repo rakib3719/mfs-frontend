@@ -17,12 +17,15 @@ export const AuthProvider = ({ children }) => {
       console.log('User data:', resp.data); 
       if (resp) {
         setUser(resp.data.user);
+        
       } else {
         setUser(null);
+        window.location('/login')
       }
     } catch (err) {
       console.error('Error fetching user:', err);
       setUser(null);
+      window.location('/login')
     } finally {
       setLoading(false);
     }
@@ -50,7 +53,7 @@ export const AuthProvider = ({ children }) => {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="animate-pulse text-xl font-semibold text-gray-700 dark:text-gray-300">
-          Loading user data...
+          Loading ...
         </div>
       </div>
     );

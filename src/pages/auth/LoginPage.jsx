@@ -7,30 +7,41 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/utils/axios';
 
-// import { useAuth } from '@/providers/AuthProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 
 const LoginPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const {refreshUser} = useAuth()
  
 
   const loginHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+    const { data } = await axiosInstance.post('/user/login', {
+      identifier: e.target.identifier.value,
+      pin: e.target.pin.value
+    });
+
+    console.log(data, 'ki ase dkehi');
     try {
       const { data } = await axiosInstance.post('/user/login', {
         identifier: e.target.identifier.value,
         pin: e.target.pin.value
       });
+
+      console.log(data, 'ki ase dkehi');
   
       if (data.success) {
     // if(refreshUser){
     //   await refreshUser();
     // }
-    
-        window.location.href = '/';
+
+       window.location.href = '/';
+await refreshUser()
+    // window.location.href = '/';
+ 
       }
     } catch (error) {
       console.log(error.response?.data?.message);

@@ -37,6 +37,7 @@ const Navbar = () => {
     try {
       await axiosInstance.post('/user/logout');
       window.location.reload(); // Force refresh to clear all states
+      window.location('/login')
     } catch (error) {
       console.error('Logout failed:', error);
     }

@@ -3,14 +3,23 @@ import React, { useState } from 'react';
 import { useAuth } from '@/providers/AuthProvider';
 import Swal from 'sweetalert2';
 import axiosInstance from '@/utils/axios';
-import useGetCashRequest from '@/hooks/useGetCashRequest';
-import { toast, ToastContainer } from 'react-toastify';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const CashRequestPage = () => {
+import { toast, ToastContainer } from 'react-toastify';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+
+
+const queryClient = new QueryClient();
+const CashRequestComponent = () => {
     const { user, isLoading } = useAuth();
-    const { data: cashRequests, loading, error, refetch } = useGetCashRequest();
+
     const [activeDropdown, setActiveDropdown] = useState(null);
+      const { data:cashRequests, loading, error, refetch } = useQuery({
+        queryKey: ['getAllUsers'],
+        queryFn: async () => {
+          const res = await axiosInstance.get('/transaction/cash-request');
+          return res.data;
+        },
+      });
 
     if(isLoading){
         return <p>loading...</p>
@@ -218,16 +227,15 @@ const CashRequestPage = () => {
     );
 };
 
+
+
+const CashRequestPage = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <CashRequestComponent/>
+    </QueryClientProvider>
+  );
+};
+
 export default CashRequestPage;
 
-// import React from 'react';
-
-// const CashRequestPage = () => {
-//     return (
-//         <div>
-            
-//         </div>
-//     );
-// };
-
-// export default CashRequestPage;

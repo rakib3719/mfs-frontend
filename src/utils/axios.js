@@ -1,14 +1,15 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
-  withCredentials: true, // This is crucial for sending cookies
+  baseURL: "https://mfs-server-side.vercel.app/api",
+  // baseURL: "http://localhost:5000/api",
+  withCredentials: true, 
 });
 
 // Request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    // You can modify config here if needed
+    
     return config;
   },
   (error) => {

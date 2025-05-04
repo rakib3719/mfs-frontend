@@ -1,18 +1,29 @@
-'use client'
-import axiosInstance from '@/utils/axios';
-import { useQuery } from '@tanstack/react-query';
 
-const useGetWidthdraw= () => {
+// import axiosInstance from '@/utils/axios';
+// import { useQuery } from '@tanstack/react-query';
+
+// const useGetWidthdraw= () => {
 
 
-  return useQuery({
+//   return useQuery({
 
-    queryKey: ['widthdraw'],
-    queryFn: async () => {
-      const response = await axiosInstance.get(`/widthdraw`);
-      return response.data;
-    },
-  });
+//     queryKey: ['widthdraw'],
+//     queryFn: async () => {
+//       const response = await axiosInstance.get(`/widthdraw`);
+//       return response.data;
+//     },
+//   });
+// };
+
+// export default useGetWidthdraw;
+import React from 'react';
+
+const useGetWidhDraw = () => {
+  return (
+    <div>
+      
+    </div>
+  );
 };
 
-export default useGetWidthdraw;
+export default useGetWidhDraw;

@@ -1,109 +1,154 @@
 'use client'
+import { useAuth } from "@/providers/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import {
   FaMoneyBillWave,
-  FaArrowCircleUp,
-  FaArrowCircleDown,
-  FaRegCreditCard,
-  FaMobileAlt,
+  FaArrowUp,
+  FaArrowDown,
+  FaCreditCard,
+  FaMobile,
   FaWallet,
   FaHistory,
   FaUser,
+  FaUsers,
+  FaUserCheck,
+  FaChartBar,
+  FaExchangeAlt
 } from "react-icons/fa";
 
-const menuItems = [
-  {
-    label: "Send Money",
-    icon: <FaArrowCircleUp size={24} />,
-    bg: "bg-pink-500",
-    link:'/send-money'
-  },
-  {
-    label: "Cash Out",
-    icon: <FaArrowCircleDown size={24} />,
-    bg: "bg-green-500",
-    link:'/cash-out'
-  },
-  {
-    label: "Cash In",
-    icon: <FaMoneyBillWave size={24} />,
-    bg: "bg-yellow-500",
-    link:'/cash-in'
-  },
-  {
-    label: "Cash request",
-    icon: <FaMobileAlt size={24} />,
-    bg: "bg-indigo-500",
-    link:'/cash-request'
-  },
-  {
-    label: "All User",
-    icon: <FaUser size={24} />,
-    bg: "bg-indigo-500",
-    link:'/all-user'
-  },
-  {
-    label: "Agent Aproval",
-    icon: <FaUser size={24} />,
-    bg: "bg-indigo-500",
-    link:'/agent-approval'
-  },
-  {
-    label: "Pay Bill",
-    icon: <FaRegCreditCard size={24} />,
-    bg: "bg-blue-500",
-  },
-  {
-    label: "Widthdraw Request",
-    icon: <FaRegCreditCard size={24} />,
-    bg: "bg-blue-500",
-    link:'/widthdraw'
-  },
-  {
-    label: "Widthdraw Request",
-    icon: <FaRegCreditCard size={24} />,
-    bg: "bg-blue-500",
-    link:'/widthdraw-request'
-  },
-  {
-    label: "My Wallet",
-    icon: <FaWallet size={24} />,
-    bg: "bg-purple-500",
-  },
-  {
-    label: "Transactions",
-    icon: <FaHistory size={24} />,
-    bg: "bg-rose-500",
-  },
-];
-
-
-
-
 const Menu = () => {
-
+  const { user } = useAuth();
+  const accountType = user?.accountType;
   const pathname = usePathname();
 
+  const getMenuItems = () => {
+    const allItems = [
+  
+      {
+        label: "Total Amount",
+        icon: <FaChartBar size={20} />,
+        bg: "bg-indigo-600",
+        link: '/total-amount',
+        roles: ['admin']
+      },
+      {
+        label: "All Users",
+        icon: <FaUsers size={20} />,
+        bg: "bg-purple-600",
+        link: '/all-user',
+        roles: ['admin']
+      },
+      {
+        label: "Agent Approval",
+        icon: <FaUserCheck size={20} />,
+        bg: "bg-blue-600",
+        link: '/agent-approval',
+        roles: ['admin']
+      },
+      {
+        label: "Withdraw Request",
+        icon: <FaExchangeAlt size={20} />,
+        bg: "bg-amber-600",
+        link: '/widthdraw-request',
+        roles: ['admin']
+      },
+      
+      // Agent specific items
+      {
+        label: "Cash In",
+        icon: <FaArrowDown size={20} className="text-green-400" />,
+        bg: "bg-gray-800 border border-green-500",
+        link: '/cash-in',
+        roles: ['agent']
+      },
+      {
+        label: "Cash Request",
+        icon: <FaMobile size={20} />,
+        bg: "bg-gray-800 border border-blue-500",
+        link: '/cash-request',
+        roles: ['agent']
+      },
+      
+      // User specific items
+      {
+        label: "Send Money",
+        icon: <FaArrowUp size={20} className="text-blue-400" />,
+        bg: "bg-gray-800 border border-blue-500",
+        link: '/send-money',
+        roles: ['user']
+      },
+      {
+        label: "Cash Out",
+        icon: <FaArrowUp size={20} className="text-purple-400" />,
+        bg: "bg-gray-800 border border-purple-500",
+        link: '/cash-out',
+        roles: ['user']
+      },
+      
+      // Shared items
+      {
+        label: "Pay Bill",
+        icon: <FaCreditCard size={20} />,
+        bg: "bg-gray-800 border border-yellow-500",
+        roles: ['user', 'agent']
+      },
+      {
+        label: "My Wallet",
+        icon: <FaWallet size={20} />,
+        bg: "bg-gray-800 border border-indigo-500",
+        roles: ['user', 'agent', 'admin']
+      },
+      {
+        label: "Transactions",
+        icon: <FaHistory size={20} />,
+        bg: "bg-gray-800 border border-rose-500",
+        link: '/transaction',
+        roles: ['user', 'agent', 'admin']
+      },
+      {
+        label: "Withdraw",
+        icon: <FaExchangeAlt size={20} />,
+        bg: "bg-gray-800 border border-amber-500",
+        link: '/widthdraw-request',
+        roles: ['admin']
+      },
+      {
+        label: "Withdraw",
+        icon: <FaExchangeAlt size={20} />,
+        bg: "bg-gray-800 border border-amber-500",
+        link: '/widthdraw',
+        roles: ['agent']
+      }
+    ];
 
-  if(pathname.includes('/login') || pathname.includes('register')){
- return null;
+    return allItems.filter(item => 
+      item.roles.includes(accountType) || 
+      (accountType === undefined && item.roles.includes('user'))
+    );
+  };
+
+  if (pathname.includes('/login') || pathname.includes('/register')) {
+    return null;
   }
+
   return (
-    <div className="grid max-w-[700px] mx-auto mt-16 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 p-4 ">
-      {menuItems.map((item, index) => (
+    <div className="grid max-w-[800px] mx-auto mt-8 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 p-4">
+      {getMenuItems().map((item, index) => (
         <Link
-        href={item?.link || '#'}
+          href={item?.link || '#'}
           key={index}
           className="flex flex-col items-center justify-center cursor-pointer group"
         >
           <div
-            className={`w-16 h-16 ${item.bg} text-white flex items-center justify-center rounded-full shadow-lg group-hover:scale-105 transition-transform duration-300`}
+            className={`w-14 h-14 ${item.bg} text-white flex items-center justify-center rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-300 hover:shadow-xl hover:shadow-${item.bg.split('-')[1]}-500/20`}
           >
             {item.icon}
           </div>
-          <p className="text-sm text-gray-700 mt-2 text-center">{item.label}</p>
+          <p className="text-sm text-gray-300 mt-2 text-center font-medium group-hover:text-white transition-colors">
+            {item.label}
+          </p>
         </Link>
       ))}
     </div>

@@ -11,9 +11,7 @@ const WidthDrawPage = () => {
   const [pin, setPin] = useState("");
 const {user,refreshUser, isLoading} = useAuth()
 
-if(!isLoading){
-  return <h1>loading..</h1>
-}
+
 
 
 const type = 'Widthdraw'
