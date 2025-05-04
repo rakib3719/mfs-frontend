@@ -36,7 +36,9 @@ const Navbar = () => {
   const logoutHandler = async () => {
     try {
       await axiosInstance.post('/user/logout');
-      window.location.reload(); // Force refresh to clear all states
+      document.cookie = 'refresh_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
+
+      window.location.reload(); 
       window.location('/login')
     } catch (error) {
       console.error('Logout failed:', error);

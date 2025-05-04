@@ -13,7 +13,7 @@ import { useAuth } from '@/providers/AuthProvider';
 const LoginPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const {refreshUser} = useAuth()
+  const {refreshUser, setUser} = useAuth()
  
 
   const loginHandler = async (e) => {
@@ -32,17 +32,18 @@ const LoginPage = () => {
       });
 
       console.log(data, 'ki ase dkehi');
+      setUser(data?.data?.user)
   
       if (data.success) {
-    // if(refreshUser){
-    //   await refreshUser();
-    // }
 
-       window.location.href = '/';
-await refreshUser()
-    // window.location.href = '/';
- 
-      }
+        await refreshUser()
+      
+        const refreshToken ="dskhfjdhfhfdu"
+    
+        // Setting the refresh token in cookies
+        document.cookie = `refresh_token=${refreshToken}`
+    
+        window.location.href = '/'; }
     } catch (error) {
       console.log(error.response?.data?.message);
       toast.error(error.response?.data?.message || 'Login failed');
@@ -115,18 +116,25 @@ await refreshUser()
           </form>
 
           <div className="mt-6 px-8 w-full">
-            <h1 className='font-semibold text-black'>DON'T HAVE AN ACCOUNT?</h1>
-            <p className="font-medium text-[#4f4f4f]">
-              Register now to create your account!
-            </p>
+  <h1 className='font-semibold text-black'>DON'T HAVE AN ACCOUNT?</h1>
+  <p className="font-medium text-[#4f4f4f]">
+    Register now to create your account!
+  </p>
 
-            <Link
-              href={'/register'}
-              className="group relative flex w-full justify-center mt-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#2b97a4] hover:bg-[#248892] transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2b97a4]"
-            >
-              REGISTER NOW
-            </Link>
-          </div>
+  <Link
+    href={'/register'}
+    className="group relative flex w-full justify-center mt-4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#2b97a4] hover:bg-[#248892] transition duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2b97a4]"
+  >
+    REGISTER NOW
+  </Link>
+
+  <div className="mt-6 text-sm text-gray-700 bg-gray-100 p-4 rounded-md shadow-sm">
+    <p className="font-semibold text-black mb-1">🔐 <span className="text-[#2b97a4] font-bold">ADMIN ACCOUNT</span></p>
+    <p><strong>Email:</strong> sd.@gmail.com</p>
+    <p><strong>Password:</strong> 12345</p>
+  </div>
+</div>
+
         </div>
       </div>
     </div>

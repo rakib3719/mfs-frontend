@@ -20,12 +20,12 @@ export const AuthProvider = ({ children }) => {
         
       } else {
         setUser(null);
-        window.location('/login')
+       
       }
     } catch (err) {
       console.error('Error fetching user:', err);
       setUser(null);
-      window.location('/login')
+  
     } finally {
       setLoading(false);
     }
@@ -60,18 +60,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={value || { _id: "6812361c62ae78fd5244f6db",
-      name: "John Doe",
-      mobileNumber: "01712345678",
-      email: "john@example.com",
-      nid: "1234567890",
-      accountType: "user",
-      balance: 490,
-      isActive: true,
-      isApproved: true,
-      createdAt: "2025-04-30T14:39:24.994Z",
-      updatedAt: "2025-05-02T10:53:51.069Z",
-      __v: 0}}>
+    <AuthContext.Provider value={value }>
       {children}
     </AuthContext.Provider>
   );

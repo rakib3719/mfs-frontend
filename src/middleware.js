@@ -7,7 +7,7 @@ export function middleware(request) {
   
 
     
-    const token = request.cookies.get('token')?.value
+    const token = request.cookies.get('refresh_token')?.value
 
     // If no token found, redirect to login
     if (!token) {
@@ -22,5 +22,7 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: [ '/dashboard', '/profile'], 
+  matcher: [
+    '/((?!login|register|_next|favicon.ico).*)',
+  ],
 }

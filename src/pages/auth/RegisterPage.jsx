@@ -7,11 +7,13 @@ import { FaUserAlt } from "react-icons/fa";
 import { toast, ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import axiosInstance from '@/utils/axios';
+import { Router } from 'next/router';
 
 const RegisterPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [accountType, setAccountType] = useState('user'); // Default to 'user'
+
 
   const registerHandler = async (e) => {
     e.preventDefault();
@@ -26,9 +28,13 @@ const RegisterPage = () => {
       accountType: accountType,
     };
 
+
+
    try {
     const resp = await axiosInstance.post('/user/register', userData);
     console.log(resp, 'done');
+    if(resp?.data?.success)
+  router.push('/login')
     
    } catch (error) {
     console.log(error);
