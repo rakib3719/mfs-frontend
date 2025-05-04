@@ -34,10 +34,12 @@ const RegisterPage = () => {
     const resp = await axiosInstance.post('/user/register', userData);
     console.log(resp, 'done');
     if(resp?.data?.success)
+      toast.success('Regtistration success')
   router.push('/login')
     
    } catch (error) {
     console.log(error);
+    toast.error('Something went wrong!pelase try again!!')
    }
 
     console.log('Prepared User Data:', userData);

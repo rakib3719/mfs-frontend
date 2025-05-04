@@ -44,9 +44,15 @@ const LoginPage = () => {
         document.cookie = `refresh_token=${refreshToken}`
     
         window.location.href = '/'; }
+
+else{
+  toast.error('Invalid Email/MobileNumber or pin')
+}
+
     } catch (error) {
       console.log(error.response?.data?.message);
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error(error.response?.data?.message ||error?.message || 'Login failed');
+
     } finally {
       setLoading(false);
     }
@@ -130,7 +136,7 @@ const LoginPage = () => {
 
   <div className="mt-6 text-sm text-gray-700 bg-gray-100 p-4 rounded-md shadow-sm">
     <p className="font-semibold text-black mb-1">🔐 <span className="text-[#2b97a4] font-bold">ADMIN ACCOUNT</span></p>
-    <p><strong>Email:</strong> sd.@gmail.com</p>
+    <p><strong>Email:</strong> sd@gmail.com</p>
     <p><strong>Password:</strong> 12345</p>
   </div>
 </div>

@@ -16,7 +16,7 @@
 
 > Use this to log in as an admin:
 
-- **Email:** `sd.@gmail.com`  
+- **Email:** `sd@gmail.com`  
 - **Password:** `12345`
 
 ---
